@@ -1,0 +1,8 @@
+{
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "simpleAPI\\":        "simpleAPI/"
+        }
+    }
+}
