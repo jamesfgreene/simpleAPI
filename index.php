@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
 
-require_once ("classes/API/APIRequest.php");
+use simpleAPI\API\APIRequest;
 
 $request = new APIRequest($_SERVER, $_REQUEST);
 
