@@ -1,7 +1,5 @@
 <?php
-
-require_once("APIRouter.php");
-require_once("APIEndpoint.php");
+namespace simpleAPI\API;
 
 class APIRequest {
 

@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . "/../core/Database.php");
+namespace simpleAPI\API;
+
+use simpleAPI\core\Database;
 
 // The API endpoint that accepts the various API requests that can be made.
 class APIEndpoint {
@@ -43,7 +45,8 @@ class APIEndpoint {
     public function getProducts() {
         $dataResponse = array ("products"=>array());
         $result = $this->db->query("SELECT * FROM products");
-        while ($row = mysql_fetch_assoc($result)) {
+		
+		while ($row = mysql_fetch_assoc($result)) {
             $dataResponse["products"][] = array(
                 "sku"=>$row["product_sku"],
                 "size"=>$row["product_size"],
@@ -78,6 +81,30 @@ class APIEndpoint {
 
         return $dataResponse;
     }
+
+    public function generateChecksum() {
+		$expireTime = time()+30; // expire in 30 seconds
+		$dataResponse = array();
+		$dataResponse["url"]		= $_GET["url"];
+		$dataResponse["checksum"]	= hash_hmac("sha256", $_GET["url"].$expireTime, "dirtyLittleSecret")."-".$expireTime;
+
+        return $dataResponse;
+    }
+
+    public function checkChecksum() {
+		$dataResponse = array();
+
+		$getChecksumPieces	= explode("-", $_GET["checksum"]);
+		$currentTime		= time();
+		$currentChecksum	= hash_hmac("sha256", $_GET["url"].$getChecksumPieces[1], "dirtyLittleSecret");	
+		$withinTime			= $currentTime <= $getChecksumPieces[1]; 
+
+		$dataResponse["valid_checksum"] = ($currentChecksum === $getChecksumPieces[0] && $withinTime);
+
+        return $dataResponse;
+    }
+
+
 
     // Get the products from Shopify and sync them:
     // 1) Import in any new products on Shopify to this system

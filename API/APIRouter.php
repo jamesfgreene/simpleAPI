@@ -1,6 +1,5 @@
 <?php
-
-require_once("APIRouter.php");
+namespace simpleAPI\API;
 
 class APIRouter {
 
@@ -12,8 +11,20 @@ class APIRouter {
         $server = $APIRequest->getServer();
 
         if ($server["REQUEST_METHOD"] === "GET") {
-            switch ($server["REQUEST_URI"]) {
-                case "/api/products":
+
+
+			$server["REQUEST_URI"] = array_shift(explode("?", $server["REQUEST_URI"]));
+			
+			switch ($server["REQUEST_URI"]) {
+			    case "/api/checksum":
+                    $this->setEndpointFunction("generateChecksum");
+                break;
+
+				case "/api/checkchecksum":
+                    $this->setEndpointFunction("checkChecksum");
+                break;
+				
+				case "/api/products":
                     $this->setEndpointFunction("getProducts");
                 break;
 
